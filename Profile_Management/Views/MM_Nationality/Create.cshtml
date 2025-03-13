@@ -1,0 +1,112 @@
+﻿@*@model Profile_Management.Models.EF.Nationality*@
+@model Profile_Management.Models.EF.NationalityViewModel
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    //var list_nation = (List<Profile_Management.Models.EF.Nationality>)ViewBag.listnation;
+    int row_index = 0;
+}
+
+<h2>新規国籍</h2>
+<head>
+    <link href="~/Content/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css" rel="stylesheet" />
+    <link href="~/Content/Add-ons/jquery.dataTables.min.css" rel="stylesheet" />
+    <link href="~/Content/Add-ons/buttons.dataTables.min.css" rel="stylesheet" />
+    <link href="~/Content/Add-ons/colReorder.dataTables.min.css" rel="stylesheet" />
+
+</head>
+<div class="content-wrapper">
+    <section class="content">
+        <div class="row" style="margin-top:10px">
+            <div class="col-md-6">
+                <div class="form-horizontal">
+
+                    @using (Html.BeginForm("Create", "MM_Nationality", FormMethod.Post))
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.NewNationality.Nation_Name, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-8 mb-3">
+                                @Html.EditorFor(model => model.NewNationality.Nation_Name, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.NewNationality.Nation_Name, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-offset-2 col-md-10">
+                                <input type="submit" value="登録" class="btn btn-success" />
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="box">
+                    <div class="box-body" style="max-height: 400px; overflow-y: auto;">
+                        <table class="table table-bordered" width="100%">
+                            <thead>
+                                <tr>
+                                    <th style="text-align: center;">順序</th>
+                                    <th style="text-align: center;">国名</th>
+                                    <th colspan="2" style="text-align: center;">機能</th>
+
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model != null)
+                                {
+                                    foreach (var item in Model.Nationalities)
+                                    {
+                                        row_index += 1;
+                                        <tr id="row-@item.Nation_ID">
+                                            <td align="center">
+                                                <span>@row_index</span>
+                                            </td>
+                                            <td align="center">
+                                                <input type="text" id="Nationality_name_@item.Nation_ID" value="@item.Nation_Name" class="form-control" />
+                                            </td>
+                                            <td align="center">
+                                                <button type="button" class="btn btn-success btn-save" data-id="@item.Nation_ID">保存</button>
+                                            </td>
+                                            <td align="center">
+                                                <button type="button" class="btn btn-danger btn-delete" data-id="@item.Nation_ID">削除</button>
+                                            </td>
+
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="2">データはなしです。</td>
+                                    </tr>
+                                }
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>
+
+@Scripts.Render("~/bundles/jqueryval")
+
+@section Scripts {
+    <script>
+        var updateNationalityUrl = '@Url.Action("UpdateNationality", "MM_Nationality")';
+        var deleteNationalityUrl = '@Url.Action("DeleteNationality", "MM_Nationality")';
+    </script>
+    <script src="~/Scripts/JS/MM_Nationality.js"></script>
+
+}
+

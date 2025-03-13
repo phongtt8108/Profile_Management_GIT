@@ -1,0 +1,276 @@
+﻿@*@model IEnumerable<Profile_Management.Controllers.User_TBL>*@
+@using PagedList.Mvc;
+@using PagedList;
+@model PagedList.IPagedList<Profile_Management.Controllers.User_TBL>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+
+<h2>個人管理</h2>
+<style>
+    .pagination {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+    }
+
+        .pagination a, .pagination span {
+            padding: 8px 12px;
+            margin: 0 5px;
+            text-decoration: none;
+            border: 1px solid #ddd;
+            color: #007bff;
+            border-radius: 4px;
+        }
+
+            .pagination a:hover {
+                background-color: #ddd;
+            }
+
+        .pagination .current {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .pagination .first, .pagination .last {
+            padding: 8px 16px;
+        }
+
+        .pagination .disabled {
+            color: #ccc;
+            pointer-events: none;
+        }
+
+        .pagination .first, .pagination .last {
+            background-color: #f1f1f1;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        .pagination .previous, .pagination .next {
+            font-weight: bold;
+        }
+
+            .pagination .previous.disabled, .pagination .next.disabled {
+                pointer-events: none;
+                color: #ccc;
+            }
+</style>
+@using (Html.BeginForm("Index", "ManagementUser", FormMethod.Get))
+{
+    <div class="input-group mb-3">
+        @Html.TextBox("searchString", ViewBag.CurrentFilter as string, new { @class = "form-control", placeholder = "検索入力" })
+        <button type="submit" class="btn btn-primary">🔍 検索</button>
+    </div>
+}
+
+<div style="float: right">
+    @using (Html.BeginForm("Create_Profile", "ManagementUser", FormMethod.Get))
+    {
+        @*@Html.ActionLink("新規作成", "Create_Profile")*@
+        <button type="submit" class="btn btn-success">新規作成</button>
+    }
+</div>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.FirstOrDefault().UserID)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.FirstOrDefault().FullName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.FirstOrDefault().DateOfBirth)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.FirstOrDefault().Gender)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.FirstOrDefault().NationalID)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.FirstOrDefault().Nation_ID)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.FirstOrDefault().MaritalStatus)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.FirstOrDefault().PhoneNumber)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.FirstOrDefault().Address)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.FirstOrDefault().Job)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.FirstOrDefault().Company)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.FirstOrDefault().Position)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.FirstOrDefault().ProfilePicture)
+        </th>
+        <th>
+            操作
+        </th>
+    </tr>
+    @{int index = 0; }
+    @if (Model != null && Model.Any())
+    {
+        foreach (var item in Model)
+        {
+            //index++;
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UserID)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FullName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DateOfBirth)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Gender)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.NationalID)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Nation_ID)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.MaritalStatus)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PhoneNumber)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Address)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Job)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Company)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Position)
+                </td>
+                <td>
+                    @if (!string.IsNullOrEmpty(item.ProfilePicture))
+                    {
+                        <img id="profilePicturePreview" src="@Url.Content(item.ProfilePicture)" alt="Profile Picture Preview" class="img-thumbnail mt-2"
+                             style="display:block;" width="30" height="30" />
+
+                    }
+                    else
+                    {
+                        <span>写真無し</span>
+                    }
+
+
+                </td>
+                <td style="display: flex; gap:10px ">
+                    @*<a href="@Url.Action("Edit", "ManagementUser", new { id = item.UserID })">Edit_User</a> |*@
+                    @*@Html.ActionLink("Edit", "Edit", new { id = item.UserID }) |
+                        @Html.ActionLink("Details", "Detail", new { id = item.UserID }) |*@
+                    <form action="@Url.Action("Edit", "ManagementUser")">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="id" value="@item.UserID" />
+                        <button style="width:40px;" type="submit" class="btn btn-info">編</button>
+                    </form> |
+                    <form action="@Url.Action("Detail", "ManagementUser")">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="id" value="@item.UserID" />
+                        <button style="width: 40px;" type="submit" class="btn btn-warning">細</button>
+                    </form> |
+
+                    @*@Html.ActionLink("Delete", "Delete_User", new { id = item.UserID })*@
+                    <form action="@Url.Action("Delete_User", "ManagementUser")" method="post" onsubmit="return confirmDelete();">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="id" value="@item.UserID" />
+                        <button style="width: 40px;" type="submit" class="btn btn-danger">削</button>
+                    </form>
+                </td>
+
+
+
+
+            </tr>
+
+        }
+    }
+    else
+    {
+        <tr>
+            <td colspan="12">
+         
+                <div class="alert alert-warning">
+                    @ViewBag.NoResults ?? "No data found."
+                </div>
+            </td>
+        </tr>
+    }
+
+
+</table>
+<div class="pagination">
+   
+    @if (Model.HasPreviousPage)
+    {
+        <a href="@Url.Action("Deatail_PageFunc","ManagementUser", new { page = 1 })" class="first">最初</a>
+    }
+    else
+    {
+        <span class="first disabled">最初</span>
+    }
+
+    @if (Model.HasPreviousPage)
+    {
+        <a href="@Url.Action("Deatail_PageFunc","ManagementUser", new { page = Model.PageNumber - 1 })" class="previous">戻す</a>
+    }
+    else
+    {
+        <span class="previous disabled">戻す</span>
+    }
+
+  
+    @for (var i = Math.Max(1, Model.PageNumber - 5); i <= Math.Min(Model.PageCount, Model.PageNumber + 5); i++)
+    {
+        <a href="@Url.Action("Deatail_PageFunc","ManagementUser", new { page = i })" class="page-number @if(i == Model.PageNumber) {<text>active</text>}">
+            @i
+        </a>
+    }
+
+ 
+    @if (Model.HasNextPage)
+    {
+        <a href="@Url.Action("Deatail_PageFunc","ManagementUser", new { page = Model.PageNumber + 1 })" class="next">次</a>
+    }
+    else
+    {
+        <span class="next disabled">次</span>
+    }
+
+
+    @if (Model.HasNextPage)
+    {
+        <a href="@Url.Action("Deatail_PageFunc","ManagementUser", new { page = Model.PageCount })" class="last">最後</a>
+    }
+    else
+    {
+        <span class="last disabled">最後</span>
+    }
+    @*@Html.PagedListPager(Model, page => Url.Action("Index", new { page, searchString = ViewBag.CurrentFilter }))*@
+</div>
+<script>
+    function confirmDelete() {
+        return confirm("データの削除を確認ください？");
+    }
+</script>

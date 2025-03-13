@@ -1,0 +1,167 @@
+﻿@model Profile_Management.Controllers.User_TBL
+
+@{
+    ViewBag.Title = "Create_Profile";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>個人情報作成</h2>
+
+
+<section class="content" style="padding-left: 20px;">
+    <div class="row">
+        @using (Html.BeginForm("Create_Profile", "ManagementUser", FormMethod.Post, new { enctype = "multipart/form-data", id = "myForm" }))
+        {
+            @Html.AntiForgeryToken()
+
+            <hr />
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <div class="row">
+                <div class="col-md-3" style="">
+                    <div class="form-group mb-3">
+                        @Html.LabelFor(model => model.FullName, new { @class = "control-label col-md-5" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.FullName, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.FullName, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group mb-3">
+                        @Html.LabelFor(model => model.DateOfBirth, new { @class = "control-label col-md-5" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.DateOfBirth, new { htmlAttributes = new { @class = "form-control", type = "date", placeholder = "YYYY年MM月DD日" } })
+                            @Html.ValidationMessageFor(model => model.DateOfBirth, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group mb-3">
+                        @Html.LabelFor(model => model.Gender, new { @class = "control-label col-md-5" })
+                        <div class="col-md-10">
+                            <div class="form-check">
+                                @Html.RadioButtonFor(model => model.Gender, "Male", new { @class = "form-check-input", id = "male" })
+                                @Html.LabelFor(model => model.Gender, "男性", new { @class = "form-check-label", @for = "male" })
+                            </div>
+                            <div class="form-check">
+                                @Html.RadioButtonFor(model => model.Gender, "Male", new { @class = "form-check-input", id = "famale" })
+                                @Html.LabelFor(model => model.Gender, "女性", new { @class = "form-check-label", @for = "famale" })
+                            </div>
+                            <div class="form-check">
+                                @Html.RadioButtonFor(model => model.Gender, "Others", new { @class = "form-check-input", id = "others" })
+                                @Html.LabelFor(model => model.Gender, "その他", new { @class = "form-check-label", @for = "others" })
+                            </div>
+
+                            @Html.ValidationMessageFor(model => model.Gender, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group mb-3">
+                        @Html.LabelFor(model => model.NationalID, new { @class = "control-label col-md-5" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.NationalID, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.NationalID, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group mb-3">
+                        @Html.LabelFor(model => model.Nation_ID, new { @class = "control-label col-md-5" })
+                        <div class="col-md-10">
+                            @Html.DropDownListFor(model => model.Nation_ID, (IEnumerable<SelectListItem>)ViewBag.Nationalities,
+                              "-- 国籍選択 --", new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.Nation_ID, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group mb-3">
+                        @Html.LabelFor(model => model.MaritalStatus, new { @class = "control-label col-md-5" })
+                        <div class="col-md-10">
+                            <div class="form-check">
+                                @Html.RadioButtonFor(model => model.MaritalStatus, "Married", new { @class = "form-check-input", id = "married" })
+                                @Html.LabelFor(model => model.Gender, "配偶者があり", new { @class = "form-check-label", @for = "married" })
+                            </div>
+                            <div class="form-check">
+                                @Html.RadioButtonFor(model => model.MaritalStatus, "Singel", new { @class = "form-check-input", id = "singel" })
+                                @Html.LabelFor(model => model.Gender, "未婚", new { @class = "form-check-label", @for = "singel" })
+                            </div>
+                            <div class="form-check">
+                                @Html.RadioButtonFor(model => model.MaritalStatus, "Others", new { @class = "form-check-input", id = "others" })
+                                @Html.LabelFor(model => model.Gender, "離婚・死別", new { @class = "form-check-label", @for = "others" })
+                            </div>
+                            @Html.ValidationMessageFor(model => model.MaritalStatus, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group mb-3">
+                        @Html.LabelFor(model => model.PhoneNumber, new { @class = "control-label col-md-5" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.PhoneNumber, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.PhoneNumber, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group mb-3">
+                        @Html.LabelFor(model => model.Address, new { @class = "control-label col-md-5" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.Address, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.Address, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+
+                    <div class="form-group mb-3">
+                        @Html.LabelFor(model => model.Job, new { @class = "control-label col-md-5" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.Job, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.Job, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group mb-3">
+                        @Html.LabelFor(model => model.Company, new { @class = "control-label col-md-5" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.Company, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.Company, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group mb-3">
+                        @Html.LabelFor(model => model.Position, new { @class = "control-label col-md-5" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.Position, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.Position, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="form-group mb-3">
+                        <label>写真アップロード</label>
+                        <input type="file" id="ProfilePictureFile" class="form-control" name="ProfilePictureFile" accept="image/*" />
+
+                        <!-- Hiển thị ảnh trước khi lưu -->
+                        <img id="previewImage" src="" alt="" style="display:none; width: 150px; height: 150px; margin-top: 10px; border: 1px solid #ccc;" />
+
+                        <input type="hidden" id="SavedFilePath" name="ProfilePicture" />
+
+
+                    </div>
+                </div>
+                <div class="form-group mb-3" style="display: flex; justify-content: center; gap: 10px;">
+                    <input type="submit" value="確認" class="btn btn-success" />
+                    <input type="button" value="すべての削除" id="clearForm" class="btn btn-danger" />
+                </div>
+            </div>
+            @* URL保存 *@
+            <input type="hidden" id="uploadTempImageUrl" value="@Url.Action("UploadTempImage", "ManagementUser")" />
+        }
+    </div>
+
+</section>
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+    <script src="~/Scripts/JS/View_Image_Create.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            document.getElementById("clearForm").addEventListener("click", function () {
+                if (confirm("すべてのデータを削除してもよろしいですか??")) {
+                    document.getElementById("myForm").reset();
+                }
+            });
+        });
+    </script>
+}
