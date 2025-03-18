@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Web.Services.Description;
 using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
 using Microsoft.Owin.Security.Cookies;
@@ -14,6 +16,8 @@ namespace Profile_Management
         // For more information on configuring authentication, please visit https://go.microsoft.com/fwlink/?LinkId=301864
         public void ConfigureAuth(IAppBuilder app)
         {
+            var userManagerFactory = new Func<ApplicationUserManager>(() => new ApplicationUserManager(new UserStore<ApplicationUser>(new ApplicationDbContext())));
+            app.CreatePerOwinContext<ApplicationSignInManager>((options, context) => new ApplicationSignInManager(userManagerFactory(), context.Authentication));
             // Configure the db context, user manager and signin manager to use a single instance per request
             app.CreatePerOwinContext(ApplicationDbContext.Create);
             app.CreatePerOwinContext<ApplicationUserManager>(ApplicationUserManager.Create);
@@ -26,6 +30,7 @@ namespace Profile_Management
             {
                 AuthenticationType = DefaultAuthenticationTypes.ApplicationCookie,
                 LoginPath = new PathString("/Account/Login"),
+                SlidingExpiration = true,
                 Provider = new CookieAuthenticationProvider
                 {
                     // Enables the application to validate the security stamp when the user logs in.

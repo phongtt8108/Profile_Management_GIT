@@ -1,0 +1,51 @@
+﻿@model IEnumerable<Profile_Management.Models.ApplicationUser>
+@{
+    ViewBag.Title = "PendingUsers";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2 style="text-align: center">アカウント管理</h2>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+<div>
+    <table class="table table-striped table-bordered">
+        <thead>
+            <tr>
+                <th>メール</th>
+                <th>ユーザーネーム</th>
+                <th>権限</th>
+                <th>アクソン</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in Model)
+            {
+                <tr>
+                    <td>@user.Email</td>
+                    <td>@user.UserName</td>
+                    <td>@user.Role</td>
+                    <td>
+                        <form method="post" action="@Url.Action("Management_Users", "Account")">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="userId" value="@user.Id" />
+                            <button type="submit" class="btn btn-success">
+                                権限付与
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info">
+            データのエーラーが発生しました。
+        </div>
+    }
+</div>
+

@@ -7,13 +7,13 @@ namespace Profile_Management.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.5.1")]
-    public sealed partial class IntialCreate_3 : IMigrationMetadata
+    public sealed partial class role_2 : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(IntialCreate_3));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(role_2));
         
         string IMigrationMetadata.Id
         {
-            get { return "202503050543584_IntialCreate_3"; }
+            get { return "202503140144315_role_2"; }
         }
         
         string IMigrationMetadata.Source

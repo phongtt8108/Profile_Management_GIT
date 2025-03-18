@@ -59,6 +59,13 @@
                 color: #ccc;
             }
 </style>
+<div style="float: right" class="mb-3">
+    @using (Html.BeginForm("Create_Profile", "ManagementUser", FormMethod.Get))
+    {
+        @*@Html.ActionLink("新規作成", "Create_Profile")*@
+        <button type="submit" class="btn btn-success">新規作成</button>
+    }
+</div>
 @using (Html.BeginForm("Index", "ManagementUser", FormMethod.Get))
 {
     <div class="input-group mb-3">
@@ -67,159 +74,155 @@
     </div>
 }
 
-<div style="float: right">
-    @using (Html.BeginForm("Create_Profile", "ManagementUser", FormMethod.Get))
-    {
-        @*@Html.ActionLink("新規作成", "Create_Profile")*@
-        <button type="submit" class="btn btn-success">新規作成</button>
-    }
-</div>
-<table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.FirstOrDefault().UserID)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.FirstOrDefault().FullName)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.FirstOrDefault().DateOfBirth)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.FirstOrDefault().Gender)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.FirstOrDefault().NationalID)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.FirstOrDefault().Nation_ID)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.FirstOrDefault().MaritalStatus)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.FirstOrDefault().PhoneNumber)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.FirstOrDefault().Address)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.FirstOrDefault().Job)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.FirstOrDefault().Company)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.FirstOrDefault().Position)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.FirstOrDefault().ProfilePicture)
-        </th>
-        <th>
-            操作
-        </th>
-    </tr>
-    @{int index = 0; }
-    @if (Model != null && Model.Any())
-    {
-        foreach (var item in Model)
-        {
-            //index++;
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.UserID)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.FullName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.DateOfBirth)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Gender)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.NationalID)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Nation_ID)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.MaritalStatus)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.PhoneNumber)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Address)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Job)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Company)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Position)
-                </td>
-                <td>
-                    @if (!string.IsNullOrEmpty(item.ProfilePicture))
-                    {
-                        <img id="profilePicturePreview" src="@Url.Content(item.ProfilePicture)" alt="Profile Picture Preview" class="img-thumbnail mt-2"
-                             style="display:block;" width="30" height="30" />
 
-                    }
-                    else
-                    {
-                        <span>写真無し</span>
-                    }
-
-
-                </td>
-                <td style="display: flex; gap:10px ">
-                    @*<a href="@Url.Action("Edit", "ManagementUser", new { id = item.UserID })">Edit_User</a> |*@
-                    @*@Html.ActionLink("Edit", "Edit", new { id = item.UserID }) |
-                        @Html.ActionLink("Details", "Detail", new { id = item.UserID }) |*@
-                    <form action="@Url.Action("Edit", "ManagementUser")">
-                        @Html.AntiForgeryToken()
-                        <input type="hidden" name="id" value="@item.UserID" />
-                        <button style="width:40px;" type="submit" class="btn btn-info">編</button>
-                    </form> |
-                    <form action="@Url.Action("Detail", "ManagementUser")">
-                        @Html.AntiForgeryToken()
-                        <input type="hidden" name="id" value="@item.UserID" />
-                        <button style="width: 40px;" type="submit" class="btn btn-warning">細</button>
-                    </form> |
-
-                    @*@Html.ActionLink("Delete", "Delete_User", new { id = item.UserID })*@
-                    <form action="@Url.Action("Delete_User", "ManagementUser")" method="post" onsubmit="return confirmDelete();">
-                        @Html.AntiForgeryToken()
-                        <input type="hidden" name="id" value="@item.UserID" />
-                        <button style="width: 40px;" type="submit" class="btn btn-danger">削</button>
-                    </form>
-                </td>
-
-
-
-
-            </tr>
-
-        }
-    }
-    else
-    {
+<div style="max-height: 500px; overflow-y: auto">
+    <table style="text-align: center" class="table">
         <tr>
-            <td colspan="12">
-         
-                <div class="alert alert-warning">
-                    @ViewBag.NoResults ?? "No data found."
-                </div>
-            </td>
+            <th>
+                @Html.DisplayNameFor(model => model.FirstOrDefault().UserID)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FirstOrDefault().FullName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FirstOrDefault().DateOfBirth)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FirstOrDefault().Gender)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FirstOrDefault().NationalID)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FirstOrDefault().Nation_ID)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FirstOrDefault().MaritalStatus)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FirstOrDefault().PhoneNumber)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FirstOrDefault().Address)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FirstOrDefault().Job)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FirstOrDefault().Company)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FirstOrDefault().Position)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FirstOrDefault().ProfilePicture)
+            </th>
+            <th>
+                操作
+            </th>
         </tr>
-    }
+       
+        @if (Model != null && Model.Any())
+        {
+            foreach (var item in Model)
+            {
+                //index++;
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.UserID)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.FullName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.DateOfBirth)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Gender)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.NationalID)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Nation_ID)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.MaritalStatus)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.PhoneNumber)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Address)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Job)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Company)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Position)
+                    </td>
+                    <td>
+                        @if (!string.IsNullOrEmpty(item.ProfilePicture))
+                        {
+                            <img id="profilePicturePreview" src="@Url.Content(item.ProfilePicture)" alt="Profile Picture Preview" class="img-thumbnail mt-2"
+                                 style="display:block;" width="30" height="30" />
+
+                        }
+                        else
+                        {
+                            <span>写真無し</span>
+                        }
 
 
-</table>
+                    </td>
+                    <td style="display: flex; gap:10px ">
+                        @*<a href="@Url.Action("Edit", "ManagementUser", new { id = item.UserID })">Edit_User</a> |*@
+                        @*@Html.ActionLink("Edit", "Edit", new { id = item.UserID }) |
+                            @Html.ActionLink("Details", "Detail", new { id = item.UserID }) |*@
+                        <form action="@Url.Action("Edit", "ManagementUser")">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="id" value="@item.UserID" />
+                            <button style="width:40px;" type="submit" class="btn btn-info">編</button>
+                        </form> |
+                        <form action="@Url.Action("Detail", "ManagementUser")">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="id" value="@item.UserID" />
+                            <button style="width: 40px;" type="submit" class="btn btn-warning">細</button>
+                        </form> |
+
+                        @*@Html.ActionLink("Delete", "Delete_User", new { id = item.UserID })*@
+                        <form action="@Url.Action("Delete_User", "ManagementUser")" method="post" onsubmit="return confirmDelete();">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="id" value="@item.UserID" />
+                            <button style="width: 40px;" type="submit" class="btn btn-danger">削</button>
+                        </form>
+                    </td>
+
+
+
+
+                </tr>
+
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="12">
+
+                    <div class="alert alert-warning">
+                        @ViewBag.NoResults ?? "No data found."
+                    </div>
+                </td>
+            </tr>
+        }
+
+
+    </table>
+</div>
 <div class="pagination">
    
     @if (Model.HasPreviousPage)

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Data.Entity;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Security.Claims;
@@ -20,7 +22,7 @@ namespace Profile_Management.Controllers
 
         public AccountController()
         {
-           
+
         }
 
         public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
@@ -69,18 +71,21 @@ namespace Profile_Management.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Login(LoginViewModel model, string returnUrl)
         {
-              if (!ModelState.IsValid)
-            {
-                return View(model);
-            }
-
+            Response.Cookies.Remove("__RequestVerificationToken");
             if (model == null || string.IsNullOrEmpty(model.Email))
             {
                 ModelState.AddModelError("", "有効なメールアドレスを入力してください。");
                 return View(model);
             }
 
-            var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            var result = await SignInManager.PasswordSignInAsync(
+                model.Email, model.Password, model.RememberMe, shouldLockout: false);
+
             switch (result)
             {
                 case SignInStatus.Success:
@@ -89,29 +94,40 @@ namespace Profile_Management.Controllers
                     {
                         Session["UserID"] = user.Id;
                         Session["Email"] = user.Email;
+                        Session["Role"] = user.Role;
+
                         if (Session["UserID"] == null)
                         {
-                            ModelState.AddModelError("", "セッション ストレージが失敗した。");
+                            ModelState.AddModelError("", "セッションストレージが失敗した。");
                             return View(model);
                         }
+                        return RedirectToLocal(returnUrl);
                     }
-                    return RedirectToLocal(returnUrl);
-
+                    ModelState.AddModelError("", "ユーザー情報が見つかりません。");
+                    return View(model);
                 case SignInStatus.LockedOut:
                     return View("Lockout");
-
                 case SignInStatus.RequiresVerification:
                     return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, RememberMe = model.RememberMe });
-
-                case SignInStatus.Failure:
                 default:
                     ModelState.AddModelError("", "メールかパスワードがご再確認ください。");
                     return View(model);
             }
         }
 
+        public ActionResult Management_Users()
+        {
+            Debug.WriteLine("Session Role in PendingUsers: " + Session["Role"]);
+            if (Session["Role"] == null || Session["Role"].ToString() != "Admin")
+            {
+                return RedirectToAction("Login", "Account");
+            }
 
-        //
+            var pendingUsers = UserManager.Users.ToList();
+            return View(pendingUsers);
+        }
+
+
         // GET: /Account/VerifyCode
         [AllowAnonymous]
         public async Task<ActionResult> VerifyCode(string provider, string returnUrl, bool rememberMe)
@@ -179,6 +195,7 @@ namespace Profile_Management.Controllers
 
                     // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
                     // Send an email with this link
+
                     string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
                     var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
                     await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
@@ -229,12 +246,12 @@ namespace Profile_Management.Controllers
                     return View("ForgotPasswordConfirmation");
                 }
 
-                // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
-                // Send an email with this link
-                // string code = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
-                // var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);		
-                // await UserManager.SendEmailAsync(user.Id, "Reset Password", "Please reset your password by clicking <a href=\"" + callbackUrl + "\">here</a>");
-                // return RedirectToAction("ForgotPasswordConfirmation", "Account");
+                //For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
+                //Send an email with this link
+                string code = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
+                var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
+                await UserManager.SendEmailAsync(user.Id, "Reset Password", "Please reset your password by clicking <a href=\"" + callbackUrl + "\">here</a>");
+                return RedirectToAction("ForgotPasswordConfirmation", "Account");
             }
 
             // If we got this far, something failed, redisplay form
@@ -347,9 +364,9 @@ namespace Profile_Management.Controllers
             {
                 return RedirectToAction("Login");
             }
-           
-                // Sign in the user with this external login provider if the user already has a login
-                var result = await SignInManager.ExternalSignInAsync(loginInfo, isPersistent: false);
+
+            // Sign in the user with this external login provider if the user already has a login
+            var result = await SignInManager.ExternalSignInAsync(loginInfo, isPersistent: false);
             switch (result)
             {
                 case SignInStatus.Success:
@@ -387,13 +404,18 @@ namespace Profile_Management.Controllers
                 {
                     return View("ExternalLoginFailure");
                 }
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                var user = new ApplicationUser { UserName = model.Email, Email = model.Email, Role = "User" };
                 var result = await UserManager.CreateAsync(user);
                 if (result.Succeeded)
                 {
                     result = await UserManager.AddLoginAsync(user.Id, info.Login);
                     if (result.Succeeded)
                     {
+                        //add 2025/3/14
+                        Session["UserID"] = user.Id;
+                        Session["Email"] = user.Email;
+                        Session["Role"] = user.Role;
+
                         await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
                         return RedirectToLocal(returnUrl);
                     }
@@ -411,6 +433,7 @@ namespace Profile_Management.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult LogOff()
         {
+
             AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
             return RedirectToAction("Index", "Home");
         }
@@ -465,8 +488,12 @@ namespace Profile_Management.Controllers
 
         private ActionResult RedirectToLocal(string returnUrl)
         {
-            if (Url.IsLocalUrl(returnUrl))
+            if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
             {
+                if (returnUrl.Contains("/Account/Login"))
+                {
+                    return RedirectToAction("Index", "Home");
+                }
                 return Redirect(returnUrl);
             }
             return RedirectToAction("Index", "Home");

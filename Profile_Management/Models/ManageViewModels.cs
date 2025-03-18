@@ -83,4 +83,13 @@ namespace Profile_Management.Models
         public string SelectedProvider { get; set; }
         public ICollection<System.Web.Mvc.SelectListItem> Providers { get; set; }
     }
+
+    public class PendingUserViewModel
+    {
+        public string UserId { get; set; }
+        public string UserName { get; set; }
+        public string Email { get; set; }
+        public string Role { get; set; }
+        public bool EmailConfirmed { get; set; }
+    }
 }
