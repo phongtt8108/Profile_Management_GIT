@@ -86,7 +86,7 @@ namespace Profile_Management.Controllers
                 
                 db.user_TBLs.Add(user);
                 db.SaveChanges();
-                db.actionLogs.Add(new Models.EF.ActionLog
+                var log = new Models.EF.ActionLog
                 {
                     ActionLogType = "Create",
                     ActionLogDescription = "User created",
@@ -95,7 +95,8 @@ namespace Profile_Management.Controllers
                     ActionLogAccountLog = (string)Session["Email"],
                     ActionLogIP = Request.UserHostAddress,
                     ActionLogDevice = Request.Browser.Browser
-                });
+                };
+                db.actionLogs.Add(log);
                 db.SaveChanges();
                 return RedirectToAction("Index", "ManagementUser");
 
@@ -180,6 +181,18 @@ namespace Profile_Management.Controllers
                     existingUser.ProfilePicture = user.ProfilePicture;
                     db.SaveChanges();
                 }
+                var log = new Models.EF.ActionLog
+                {
+                    ActionLogType = "Edit",
+                    ActionLogDescription = "User Edit",
+                    ActionLogDate = DateTime.Now,
+                    ActionLogUser = user.UserID,
+                    ActionLogAccountLog = (string)Session["Email"],
+                    ActionLogIP = Request.UserHostAddress,
+                    ActionLogDevice = Request.Browser.Browser
+                };
+                db.actionLogs.Add(log);
+                db.SaveChanges();
             }
             return RedirectToAction("Edit", new {id= user.UserID});
         }
@@ -191,6 +204,18 @@ namespace Profile_Management.Controllers
             var user = db.user_TBLs.Find(id);
             if(user != null)
             {
+                var log = new Models.EF.ActionLog
+                {
+                    ActionLogType = "Delete",
+                    ActionLogDescription = "User Edit",
+                    ActionLogDate = DateTime.Now,
+                    ActionLogUser = user.UserID,
+                    ActionLogAccountLog = (string)Session["Email"],
+                    ActionLogIP = Request.UserHostAddress,
+                    ActionLogDevice = Request.Browser.Browser
+                };
+                db.actionLogs.Add(log);
+                
                 db.user_TBLs.Remove(user);
                 db.SaveChanges();
             }    

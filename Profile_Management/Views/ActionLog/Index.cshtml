@@ -1,0 +1,53 @@
+﻿@model IEnumerable<Profile_Management.Models.EF.ActionLog>
+@{
+    ViewBag.Title = "View";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>View</h2>
+
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>ActionLogID</th>
+            <th>ActionLogUser</th>
+            <th>ActionLogDate</th>
+            <th>ActionLogType</th>
+            <th>ActionLogAccountLog</th>
+            <th>ActionLogIP</th>
+            <th>ActionLogDevice</th>
+            <th>ActionLogDescription</th>
+
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model == null)
+        {
+            <tr>
+                <td colspan="8">No records found</td>
+            </tr>
+        }
+        else
+        {
+            foreach (var log in Model)
+            {
+                <tr>
+                    <td>@log.ActionLogID</td>
+                    <td>@log.ActionLogUser</td>
+                    <td>@log.ActionLogDate.ToString("yyyy-MM-dd HH:mm:ss")</td>
+                    <td>@log.ActionLogType</td>
+                    <td>@log.ActionLogAccountLog</td>
+                    <td>@log.ActionLogIP</td>
+                    <td>@log.ActionLogDevice</td>
+                    <td>@log.ActionLogDescription</td>
+                </tr>
+            }
+
+        }
+
+    </tbody>
+</table>
+
+
