@@ -31,6 +31,7 @@ namespace Profile_Management.Models
         }
         public DbSet<User_TBL> user_TBLs { get; set; }
         public DbSet<Nationality> nationalities { get; set; }
+        public DbSet<ActionLog>  actionLogs { get; set; }
 
         public static ApplicationDbContext Create()
         {

@@ -54,6 +54,7 @@
                         @if (Session["Role"] != null && Session["Role"].ToString() == "Admin")
                         {
                             <a href="@Url.Action("Management_Users", "Account")" class="nav-item nav-link">アカウント管理</a>
+                            <a href="~/Views/ActionLog/View.cshtml" class="nav-item nav-link">Log管理</a>
                         }
                         <a href="@Url.Action("Contact", "Home")" class="nav-item nav-link">情報</a>
                     </div>

@@ -331,6 +331,20 @@
     <Compile Include="Migrations\202503140144315_role_2.Designer.cs">
       <DependentUpon>202503140144315_role_2.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202503180631112_ActionLog.cs" />
+    <Compile Include="Migrations\202503180631112_ActionLog.Designer.cs">
+      <DependentUpon>202503180631112_ActionLog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202503180655258_ActionLog_2.cs" />
+    <Compile Include="Migrations\202503180655258_ActionLog_2.Designer.cs">
+      <DependentUpon>202503180655258_ActionLog_2.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202503180810094_ActionLog_3.cs" />
+    <Compile Include="Migrations\202503180810094_ActionLog_3.Designer.cs">
+      <DependentUpon>202503180810094_ActionLog_3.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Models\LogService.cs" />
+    <Compile Include="Models\EF\ActionLog.cs" />
     <Compile Include="Models\EF\Nationality.cs" />
     <Compile Include="Models\EF\NationalityViewModel.cs" />
     <Compile Include="Models\EF\User_TBL.cs" />
@@ -4582,6 +4596,7 @@
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\MM_Nationality\Create.cshtml" />
     <Content Include="Views\Account\Management_Users.cshtml" />
+    <Content Include="Views\ActionLog\View.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -4632,6 +4647,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202503140144315_role_2.resx">
       <DependentUpon>202503140144315_role_2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202503180631112_ActionLog.resx">
+      <DependentUpon>202503180631112_ActionLog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202503180655258_ActionLog_2.resx">
+      <DependentUpon>202503180655258_ActionLog_2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202503180810094_ActionLog_3.resx">
+      <DependentUpon>202503180810094_ActionLog_3.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

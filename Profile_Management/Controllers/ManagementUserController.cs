@@ -54,12 +54,14 @@ namespace Profile_Management.Controllers
             {
                 return RedirectToAction("Login", "Account");
             }
-            var nationalities = db.nationalities.Select(n => new SelectListItem
-            {
-                Value = n.Nation_ID.ToString(),
-                Text = n.Nation_Name
-            }).ToList();
-            ViewBag.Nationalities = nationalities;
+            var nationalities = db.nationalities.ToList();
+            //{
+            //    Value = n.Nation_ID.ToString(),
+            //    Text = n.Nation_Name
+            //}).ToList();
+            //ViewBag.Nationalities = nationalities;
+            ViewBag.Nationalities = new SelectList(nationalities, "Nation_ID", "Nation_Name");
+
             return View();
         }
         [HttpPost]
@@ -81,12 +83,24 @@ namespace Profile_Management.Controllers
 
             if (ModelState.IsValid)
             {
+                
                 db.user_TBLs.Add(user);
+                db.SaveChanges();
+                db.actionLogs.Add(new Models.EF.ActionLog
+                {
+                    ActionLogType = "Create",
+                    ActionLogDescription = "User created",
+                    ActionLogDate = DateTime.Now,
+                    ActionLogUser = user.UserID,
+                    ActionLogAccountLog = (string)Session["Email"],
+                    ActionLogIP = Request.UserHostAddress,
+                    ActionLogDevice = Request.Browser.Browser
+                });
                 db.SaveChanges();
                 return RedirectToAction("Index", "ManagementUser");
 
             }
-            return View(user);
+            return RedirectToAction("Create_Profile", user);
         }
         public ActionResult Detail(int id)
         {
@@ -103,6 +117,7 @@ namespace Profile_Management.Controllers
             }
             ViewBag.ImagePath = imagePath;
             return View(userdetail);
+            
         }
         public ActionResult Edit(int id)
         {

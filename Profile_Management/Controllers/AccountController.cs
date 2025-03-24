@@ -92,6 +92,7 @@ namespace Profile_Management.Controllers
                     var user = await UserManager.FindByNameAsync(model.Email);
                     if (user != null)
                     {
+                        
                         Session["UserID"] = user.Id;
                         Session["Email"] = user.Email;
                         Session["Role"] = user.Role;
