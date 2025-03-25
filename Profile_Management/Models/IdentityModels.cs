@@ -28,6 +28,7 @@ namespace Profile_Management.Models
         public ApplicationDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)
         {
+            this.Configuration.LazyLoadingEnabled = true;
         }
         public DbSet<User_TBL> user_TBLs { get; set; }
         public DbSet<Nationality> nationalities { get; set; }

@@ -27,34 +27,35 @@ namespace Profile_Management.Controllers
         [StringLength(20)]
         public String Gender { get; set; }
         [Required]
+        [Range(1000000000000000, 99999999999999, ErrorMessage = "20文字を超えてはいけません!")]
         [DisplayName("個人番号")]
-        public int NationalID { get; set; }
+        public long NationalID { get; set; }
 
         //[ForeignKey("Nation_ID")]
         [Required(ErrorMessage = "国籍は必須です！")]
         [DisplayName("国籍")]
-        public int Nation_ID { get; set; }
+        public int? Nation_ID { get; set; }
         public virtual Nationality Nationality { get; set; }
         [StringLength(20)]
         [DisplayName("婚姻状況")]
         public String MaritalStatus { get; set; }
-        [StringLength(50, ErrorMessage = "Must not be larger than 35 characters!")]
+        [StringLength(50, ErrorMessage = "50文字を超えてはいけません!")]
         [DisplayName("携帯電話")]
         public string PhoneNumber { get; set; }
-        [StringLength(500, ErrorMessage = "Must not be larger than 500 characters!")]
+        [StringLength(500, ErrorMessage = "500文字を超えてはいけません!")]
         [DisplayName("住所")]
         public string Address { get; set; }
-        [StringLength(50, ErrorMessage = "Must not be larger than 50 characters!")]
+        [StringLength(50, ErrorMessage = "50文字を超えてはいけません!")]
         [DisplayName("職業")]
         public string Job { get; set; }
-        [StringLength(100, ErrorMessage = "Must not be larger than 100 characters!")]
+        [StringLength(100, ErrorMessage = "100文字を超えてはいけません!")]
         [DisplayName("会社名")]
         public string Company { get; set; }
-        [StringLength(50, ErrorMessage = "Must not be larger than 50 characters!")]
+        [StringLength(50, ErrorMessage = "50文字を超えてはいけません!")]
         [DisplayName("役職")]
         public string Position { get; set; }
         [DisplayName("写真")]
-        [StringLength(1000)]
+        [StringLength(1000, ErrorMessage = "1000文字を超えてはいけません!")]
         public string ProfilePicture { get; set; }
 
         

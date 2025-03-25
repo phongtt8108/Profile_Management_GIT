@@ -8,6 +8,9 @@ using Microsoft.AspNet.Identity;
 using Profile_Management.Models;
 using PagedList.Mvc;
 using PagedList;
+using Profile_Management.Common;
+using System.Text;
+using System.Data.Entity;
 
 namespace Profile_Management.Controllers
 {
@@ -38,11 +41,11 @@ namespace Profile_Management.Controllers
                     u.Gender.Contains(searchString) ||
                     u.Job.Contains(searchString) ||
                     u.MaritalStatus.Contains(searchString));
-                   
+
             }
             if (!users.Any())
             {
-                ViewBag.NoResults = "該当のデータがありません"; 
+                ViewBag.NoResults = "該当のデータがありません";
             }
             users = users.OrderByDescending(u => u.UserID);
             ViewBag.CurrentFilter = searchString;
@@ -55,11 +58,7 @@ namespace Profile_Management.Controllers
                 return RedirectToAction("Login", "Account");
             }
             var nationalities = db.nationalities.ToList();
-            //{
-            //    Value = n.Nation_ID.ToString(),
-            //    Text = n.Nation_Name
-            //}).ToList();
-            //ViewBag.Nationalities = nationalities;
+
             ViewBag.Nationalities = new SelectList(nationalities, "Nation_ID", "Nation_Name");
 
             return View();
@@ -83,23 +82,11 @@ namespace Profile_Management.Controllers
 
             if (ModelState.IsValid)
             {
-                
+
                 db.user_TBLs.Add(user);
-                db.SaveChanges();
-                var log = new Models.EF.ActionLog
-                {
-                    ActionLogType = "Create",
-                    ActionLogDescription = "User created",
-                    ActionLogDate = DateTime.Now,
-                    ActionLogUser = user.UserID,
-                    ActionLogAccountLog = (string)Session["Email"],
-                    ActionLogIP = Request.UserHostAddress,
-                    ActionLogDevice = Request.Browser.Browser
-                };
-                db.actionLogs.Add(log);
+                ActionLogMM.ActionLogSV("Create", user.FullName, user.UserID);
                 db.SaveChanges();
                 return RedirectToAction("Index", "ManagementUser");
-
             }
             return RedirectToAction("Create_Profile", user);
         }
@@ -118,7 +105,7 @@ namespace Profile_Management.Controllers
             }
             ViewBag.ImagePath = imagePath;
             return View(userdetail);
-            
+
         }
         public ActionResult Edit(int id)
         {
@@ -126,21 +113,27 @@ namespace Profile_Management.Controllers
             {
                 return RedirectToAction("Login", "Account");
             }
-            var user = db.user_TBLs.Find(id);
+            var user = db.user_TBLs
+                 .Include(u => u.Nationality)
+                 .FirstOrDefault(u => u.UserID == id);
+
+
             var imagePath = user.ProfilePicture;
 
             if (user == null)
             {
                 return RedirectToAction("Index", "ManagementUser");
             }
-            var nationalities = db.nationalities.Select(n => new SelectListItem
-            {
-                Value = n.Nation_ID.ToString(),
-                Text = n.Nation_Name
-            }).ToList();
-            ViewBag.Nationalities = nationalities;
-            ViewBag.FormattedDate = user.DateOfBirth?.ToString("yyyy-MM-dd");
+            var nationalities = db.nationalities
+                     .Select(n => new SelectListItem
+                     {
+                         Value = n.Nation_ID.ToString(),
+                         Text = n.Nation_Name
+                     })
+                     .ToList();
 
+            ViewBag.Nationalities = new SelectList(nationalities, "Value", "Text", user.Nationality);
+            ViewBag.FormattedDate = user.DateOfBirth?.ToString("yyyy-MM-dd");
             ViewBag.ImagePath = imagePath;
             return View(user);
 
@@ -149,6 +142,10 @@ namespace Profile_Management.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit(User_TBL user)
         {
+            if (Session["UserID"] == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
             if (!string.IsNullOrEmpty(user.ProfilePicture))
             {
                 string tempPath = Server.MapPath(user.ProfilePicture);
@@ -165,36 +162,58 @@ namespace Profile_Management.Controllers
             if (ModelState.IsValid)
             {
                 var existingUser = db.user_TBLs.Find(user.UserID);
+                var oldData = ActionLogMM.EditBeboreData(user.UserID);
                 if (existingUser != null)
                 {
-                    existingUser.FullName = user.FullName;
-                    existingUser.DateOfBirth = user.DateOfBirth;
-                    existingUser.Gender = user.Gender;
-                    existingUser.NationalID = user.NationalID;
-                    existingUser.Nation_ID = user.Nation_ID;
-                    existingUser.MaritalStatus = user.MaritalStatus;
-                    existingUser.PhoneNumber = user.PhoneNumber;
-                    existingUser.Address = user.Address;
-                    existingUser.Job = user.Job;
-                    existingUser.Company = user.Company;
-                    existingUser.Position = user.Position;
-                    existingUser.ProfilePicture = user.ProfilePicture;
-                    db.SaveChanges();
+
+                    bool isDataChanged = false;
+                    var properties = typeof(User_TBL).GetProperties();
+                    StringBuilder changesLog = new StringBuilder();
+
+                    foreach (var property in properties)
+                    {
+                        var oldValue = property.GetValue(existingUser);
+                        var newValue = property.GetValue(user);
+
+                        if (oldValue != newValue)
+                        {
+                            isDataChanged = true;
+                            if (oldValue == null)
+                            {
+                                changesLog.AppendLine($"{property.Name}: {newValue}");
+                            }
+                            else if (newValue == null)
+                            {
+                                changesLog.AppendLine($"{property.Name}: {oldValue} => null");
+                            }
+                            else
+                            {
+                                changesLog.AppendLine($"{property.Name}: {oldValue} => {newValue}");
+                            }
+                            property.SetValue(existingUser, newValue);
+                        }
+                    }
+                    if (isDataChanged)
+                    {
+                        ActionLogMM.ActionLogSV("Edit", changesLog.ToString(), user.UserID);
+                        db.SaveChanges();
+                    }
+                    //existingUser.FullName = user.FullName;
+                    //existingUser.DateOfBirth = user.DateOfBirth;
+                    //existingUser.Gender = user.Gender;
+                    //existingUser.NationalID = user.NationalID;
+                    //existingUser.Nation_ID = user.Nation_ID;
+                    //existingUser.MaritalStatus = user.MaritalStatus;
+                    //existingUser.PhoneNumber = user.PhoneNumber;
+                    //existingUser.Address = user.Address;
+                    //existingUser.Job = user.Job;
+                    //existingUser.Company = user.Company;
+                    //existingUser.Position = user.Position;
+                    //existingUser.ProfilePicture = user.ProfilePicture;
                 }
-                var log = new Models.EF.ActionLog
-                {
-                    ActionLogType = "Edit",
-                    ActionLogDescription = "User Edit",
-                    ActionLogDate = DateTime.Now,
-                    ActionLogUser = user.UserID,
-                    ActionLogAccountLog = (string)Session["Email"],
-                    ActionLogIP = Request.UserHostAddress,
-                    ActionLogDevice = Request.Browser.Browser
-                };
-                db.actionLogs.Add(log);
-                db.SaveChanges();
+
             }
-            return RedirectToAction("Edit", new {id= user.UserID});
+            return RedirectToAction("Edit", new { id = user.UserID });
         }
 
         [HttpPost]
@@ -202,23 +221,13 @@ namespace Profile_Management.Controllers
         public ActionResult Delete_User(int id)
         {
             var user = db.user_TBLs.Find(id);
-            if(user != null)
+            if (user != null)
             {
-                var log = new Models.EF.ActionLog
-                {
-                    ActionLogType = "Delete",
-                    ActionLogDescription = "User Edit",
-                    ActionLogDate = DateTime.Now,
-                    ActionLogUser = user.UserID,
-                    ActionLogAccountLog = (string)Session["Email"],
-                    ActionLogIP = Request.UserHostAddress,
-                    ActionLogDevice = Request.Browser.Browser
-                };
-                db.actionLogs.Add(log);
-                
+                ActionLogMM.ActionLogSV("Delete", user.FullName, user.UserID);
+
                 db.user_TBLs.Remove(user);
                 db.SaveChanges();
-            }    
+            }
 
             return RedirectToAction("Index");
         }
@@ -255,7 +264,7 @@ namespace Profile_Management.Controllers
             const int pageSize = 10;
             var users = db.user_TBLs.OrderByDescending(p => p.UserID).ToList();
             var pageUsers = users.ToPagedList(page, pageSize);
-            return View("Index",pageUsers);
+            return View("Index", pageUsers);
         }
     }
 }

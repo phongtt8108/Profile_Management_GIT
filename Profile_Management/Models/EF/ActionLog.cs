@@ -26,6 +26,8 @@ namespace Profile_Management.Models.EF
         public string ActionLogAccountLog { get; set; }
         public string ActionLogIP { get; set; }
         public string ActionLogDevice { get; set; }
+        public string ActionLogDevice_Name { get; set; }
+        public string Location { get; set; }
 
     }
 }

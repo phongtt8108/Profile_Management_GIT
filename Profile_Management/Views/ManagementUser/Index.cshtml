@@ -144,7 +144,7 @@
                         @Html.DisplayFor(modelItem => item.NationalID)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.Nation_ID)
+                        @Html.DisplayFor(modelItem => item.Nationality.Nation_Name)
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.MaritalStatus)
@@ -185,7 +185,7 @@
                         <form action="@Url.Action("Edit", "ManagementUser")">
                             @Html.AntiForgeryToken()
                             <input type="hidden" name="id" value="@item.UserID" />
-                            <button style="width:40px;" type="submit" class="btn btn-info">編</button>
+                            <button style="width:40px;" type="submit" class="btn btn-info">変</button>
                         </form> |
                         <form action="@Url.Action("Detail", "ManagementUser")">
                             @Html.AntiForgeryToken()
