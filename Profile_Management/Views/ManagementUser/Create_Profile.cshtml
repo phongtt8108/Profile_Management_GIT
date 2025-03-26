@@ -4,16 +4,13 @@
     ViewBag.Title = "Create_Profile";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
 <h2>個人情報作成</h2>
-
 
 <section class="content" style="padding-left: 20px;">
     <div class="row">
         @using (Html.BeginForm("Create_Profile", "ManagementUser", FormMethod.Post, new { enctype = "multipart/form-data", id = "myForm" }))
         {
             @Html.AntiForgeryToken()
-
             <hr />
             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
             <div class="row">
@@ -102,8 +99,6 @@
                             @Html.ValidationMessageFor(model => model.Address, "", new { @class = "text-danger" })
                         </div>
                     </div>
-
-
                     <div class="form-group mb-3">
                         @Html.LabelFor(model => model.Job, new { @class = "control-label col-md-5" })
                         <div class="col-md-10">
@@ -126,18 +121,12 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="col-md-3">
                     <div class="form-group mb-3">
                         <label>写真アップロード</label>
                         <input type="file" id="ProfilePictureFile" class="form-control" name="ProfilePictureFile" accept="image/*" />
-
-                        @*edrftcvgbuhbnubnbnbjhbjhbhjbjhbjhb*@
                         <img id="previewImage" src="" alt="" style="display:none; width: 150px; height: 150px; margin-top: 10px; border: 1px solid #ccc;" />
-
                         <input type="hidden" id="SavedFilePath" name="ProfilePicture" />
-
-
                     </div>
                 </div>
                 <div class="form-group mb-3" style="display: flex; justify-content: center; gap: 10px;">

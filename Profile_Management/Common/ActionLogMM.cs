@@ -18,8 +18,6 @@ namespace Profile_Management.Common
         private static ApplicationDbContext db = new ApplicationDbContext();
         public static void ActionLogSV(string actionLogType, string actionLogDescription,int actionLogUser)
         {
-            
-            
             var actionLog = new ActionLog
             {
                 ActionLogType = actionLogType,

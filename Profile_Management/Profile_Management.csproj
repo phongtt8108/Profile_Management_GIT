@@ -317,7 +317,6 @@
     <Compile Include="App_Start\IdentityConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
-    <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
     <Compile Include="Common\ActionLogMM.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\ActionLogController.cs" />
@@ -325,26 +324,6 @@
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\ManagementUserController.cs" />
     <Compile Include="Controllers\MM_NationalityController.cs" />
-    <Compile Include="Migrations\202503250911186_location.cs" />
-    <Compile Include="Migrations\202503250911186_location.Designer.cs">
-      <DependentUpon>202503250911186_location.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202503250919438_location=2.cs" />
-    <Compile Include="Migrations\202503250919438_location=2.Designer.cs">
-      <DependentUpon>202503250919438_location=2.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202503250928502_location=3.cs" />
-    <Compile Include="Migrations\202503250928502_location=3.Designer.cs">
-      <DependentUpon>202503250928502_location=3.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202503250945113_location=4.cs" />
-    <Compile Include="Migrations\202503250945113_location=4.Designer.cs">
-      <DependentUpon>202503250945113_location=4.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\202503251446177_intchange.cs" />
-    <Compile Include="Migrations\202503251446177_intchange.Designer.cs">
-      <DependentUpon>202503251446177_intchange.cs</DependentUpon>
-    </Compile>
     <Compile Include="Migrations\202503251504448_intchange_1.cs" />
     <Compile Include="Migrations\202503251504448_intchange_1.Designer.cs">
       <DependentUpon>202503251504448_intchange_1.cs</DependentUpon>
@@ -352,6 +331,14 @@
     <Compile Include="Migrations\202503260403124_Required.cs" />
     <Compile Include="Migrations\202503260403124_Required.Designer.cs">
       <DependentUpon>202503260403124_Required.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202503260743535_index_1.cs" />
+    <Compile Include="Migrations\202503260743535_index_1.Designer.cs">
+      <DependentUpon>202503260743535_index_1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202503260900147_changelong.cs" />
+    <Compile Include="Migrations\202503260900147_changelong.Designer.cs">
+      <DependentUpon>202503260900147_changelong.cs</DependentUpon>
     </Compile>
     <Compile Include="Models\LogService.cs" />
     <Compile Include="Models\EF\ActionLog.cs" />
@@ -4163,12 +4150,11 @@
     <Content Include="Assets\plugins\uplot\uPlot.iife.min.js" />
     <Content Include="Assets\plugins\uplot\uPlot.min.css" />
     <Content Include="Assets_Trial\css\bootstrap.min.css" />
+    <Content Include="Assets_Trial\css\pagination.css" />
     <Content Include="Assets_Trial\css\style.css" />
     <Content Include="Assets_Trial\img\avatar.jpg" />
-    <Content Include="Assets_Trial\img\background3.jpg" />
+    <Content Include="Assets_Trial\img\background138.jpg" />
     <Content Include="Assets_Trial\img\background.jpg" />
-    <Content Include="Assets_Trial\img\background2.jpg" />
-    <Content Include="Assets_Trial\img\background4.jpg" />
     <Content Include="Assets_Trial\img\background5.jpg" />
     <Content Include="Assets_Trial\js\main.js" />
     <Content Include="Assets_Trial\lib\easing\easing.js" />
@@ -4217,7 +4203,6 @@
     <Content Include="Scripts\bootstrap.esm.min.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
-    <Content Include="Areas\Admin\Views\web.config" />
     <Content Include="Assets\dist\css\adminlte.css.map" />
     <Content Include="Assets\dist\css\adminlte.min.css.map" />
     <Content Include="Assets\dist\css\alt\adminlte.components.css.map" />
@@ -4610,9 +4595,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Areas\Admin\Controllers\" />
-    <Folder Include="Areas\Admin\Data\" />
-    <Folder Include="Areas\Admin\Views\Shared\" />
     <Folder Include="UploadedFiles\Temp\" />
   </ItemGroup>
   <ItemGroup>
@@ -4643,26 +4625,17 @@
     <Content Include="Scripts\jquery-3.7.0.min.map" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\202503250911186_location.resx">
-      <DependentUpon>202503250911186_location.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202503250919438_location=2.resx">
-      <DependentUpon>202503250919438_location=2.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202503250928502_location=3.resx">
-      <DependentUpon>202503250928502_location=3.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202503250945113_location=4.resx">
-      <DependentUpon>202503250945113_location=4.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\202503251446177_intchange.resx">
-      <DependentUpon>202503251446177_intchange.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202503251504448_intchange_1.resx">
       <DependentUpon>202503251504448_intchange_1.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202503260403124_Required.resx">
       <DependentUpon>202503260403124_Required.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202503260743535_index_1.resx">
+      <DependentUpon>202503260743535_index_1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202503260900147_changelong.resx">
+      <DependentUpon>202503260900147_changelong.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

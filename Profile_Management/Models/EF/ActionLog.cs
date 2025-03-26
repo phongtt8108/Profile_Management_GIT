@@ -22,7 +22,7 @@ namespace Profile_Management.Models.EF
         [Display(Name = "Action Log Date")]
         public DateTime ActionLogDate { get; set; }
         [Display(Name = "Action Log User")]
-        public int ActionLogUser { get; set; }
+        public long ActionLogUser { get; set; }
         public string ActionLogAccountLog { get; set; }
         public string ActionLogIP { get; set; }
         public string ActionLogDevice { get; set; }

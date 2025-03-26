@@ -10,71 +10,20 @@
 }
 
 <h2>個人管理</h2>
-<style>
-    .pagination {
-        display: flex;
-        justify-content: center;
-        margin-top: 20px;
-    }
 
-        .pagination a, .pagination span {
-            padding: 8px 12px;
-            margin: 0 5px;
-            text-decoration: none;
-            border: 1px solid #ddd;
-            color: #007bff;
-            border-radius: 4px;
-        }
-
-            .pagination a:hover {
-                background-color: #ddd;
-            }
-
-        .pagination .current {
-            background-color: #007bff;
-            color: white;
-        }
-
-        .pagination .first, .pagination .last {
-            padding: 8px 16px;
-        }
-
-        .pagination .disabled {
-            color: #ccc;
-            pointer-events: none;
-        }
-
-        .pagination .first, .pagination .last {
-            background-color: #f1f1f1;
-            border-radius: 4px;
-            font-weight: bold;
-        }
-
-        .pagination .previous, .pagination .next {
-            font-weight: bold;
-        }
-
-            .pagination .previous.disabled, .pagination .next.disabled {
-                pointer-events: none;
-                color: #ccc;
-            }
-</style>
 <div style="float: right" class="mb-3">
     @using (Html.BeginForm("Create_Profile", "ManagementUser", FormMethod.Get))
     {
-        @*@Html.ActionLink("新規作成", "Create_Profile")*@
         <button type="submit" class="btn btn-success">新規作成</button>
     }
 </div>
-@using (Html.BeginForm("Index", "ManagementUser", FormMethod.Get))
+@using (Html.BeginForm("SearchFunction", "ManagementUser", FormMethod.Get))
 {
     <div class="input-group mb-3">
         @Html.TextBox("searchString", ViewBag.CurrentFilter as string, new { @class = "form-control", placeholder = "検索入力" })
         <button type="submit" class="btn btn-primary">🔍 検索</button>
     </div>
 }
-
-
 <div style="max-height: 500px; overflow-y: auto">
     <table style="text-align: center" class="table">
         <tr>
@@ -121,7 +70,7 @@
                 操作
             </th>
         </tr>
-       
+
         @if (Model != null && Model.Any())
         {
             foreach (var item in Model)
@@ -169,19 +118,13 @@
                         {
                             <img id="profilePicturePreview" src="@Url.Content(item.ProfilePicture)" alt="Profile Picture Preview" class="img-thumbnail mt-2"
                                  style="display:block;" width="30" height="30" />
-
                         }
                         else
                         {
                             <span>写真無し</span>
                         }
-
-
                     </td>
                     <td style="display: flex; gap:10px ">
-                        @*<a href="@Url.Action("Edit", "ManagementUser", new { id = item.UserID })">Edit_User</a> |*@
-                        @*@Html.ActionLink("Edit", "Edit", new { id = item.UserID }) |
-                            @Html.ActionLink("Details", "Detail", new { id = item.UserID }) |*@
                         <form action="@Url.Action("Edit", "ManagementUser")">
                             @Html.AntiForgeryToken()
                             <input type="hidden" name="id" value="@item.UserID" />
@@ -200,12 +143,7 @@
                             <button style="width: 40px;" type="submit" class="btn btn-danger">削</button>
                         </form>
                     </td>
-
-
-
-
                 </tr>
-
             }
         }
         else
@@ -219,12 +157,13 @@
                 </td>
             </tr>
         }
-
-
     </table>
 </div>
+
+    
+
 <div class="pagination">
-   
+
     @if (Model.HasPreviousPage)
     {
         <a href="@Url.Action("Deatail_PageFunc","ManagementUser", new { page = 1 })" class="first">最初</a>
@@ -243,15 +182,14 @@
         <span class="previous disabled">戻す</span>
     }
 
-  
     @for (var i = Math.Max(1, Model.PageNumber - 5); i <= Math.Min(Model.PageCount, Model.PageNumber + 5); i++)
     {
-        <a href="@Url.Action("Deatail_PageFunc","ManagementUser", new { page = i })" class="page-number @if(i == Model.PageNumber) {<text>active</text>}">
+        <a href="@Url.Action("Deatail_PageFunc", "ManagementUser", new { page = i })" class="page-number @(i == Model.PageNumber ? "active" : "")">
             @i
         </a>
     }
 
- 
+
     @if (Model.HasNextPage)
     {
         <a href="@Url.Action("Deatail_PageFunc","ManagementUser", new { page = Model.PageNumber + 1 })" class="next">次</a>
@@ -270,7 +208,7 @@
     {
         <span class="last disabled">最後</span>
     }
-    @*@Html.PagedListPager(Model, page => Url.Action("Index", new { page, searchString = ViewBag.CurrentFilter }))*@
+    <a style="display: block; text-align: left; font-size: small">Total Record: @ViewBag.CountUser</a>
 </div>
 <script>
     function confirmDelete() {

@@ -12,6 +12,8 @@ using Profile_Management.Common;
 using System.Text;
 using System.Data.Entity;
 using System.Data.Entity.Validation;
+using System.Drawing.Printing;
+using System.Web.UI;
 
 namespace Profile_Management.Controllers
 {
@@ -20,15 +22,13 @@ namespace Profile_Management.Controllers
         private ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: ManagementUser
-        public ActionResult Index(string searchString, int page = 1)
+        public ActionResult Index(int page = 1, string searchString = "")
         {
             if (Session["UserID"] == null)
             {
                 return RedirectToAction("Login", "Account");
             }
-
-            int pageSize = 10;
-
+            const int pageSize = 10;
             var users = db.user_TBLs.AsQueryable();
             if (!string.IsNullOrEmpty(searchString))
             {
@@ -37,15 +37,42 @@ namespace Profile_Management.Controllers
                     u.Gender.Contains(searchString) ||
                     u.Job.Contains(searchString) ||
                     u.MaritalStatus.Contains(searchString));
+            }
+            ViewBag.CountUser = users.Count();
+            var pagedUsers = users
+                .OrderByDescending(u => u.UserID)
+                .ToPagedList(page, pageSize);
+            ViewBag.CurrentFilter = searchString;
 
+            return View(pagedUsers);
+        }
+
+        public ActionResult SearchFunction(string searchString, int page = 1)
+        {
+            if (Session["UserID"] == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+            const int pageSize = 10;
+            var users = db.user_TBLs.AsQueryable();
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                users = users.Where(u =>
+                    u.FullName.Contains(searchString) ||
+                    u.Gender.Contains(searchString) ||
+                    u.Job.Contains(searchString) ||
+                    u.MaritalStatus.Contains(searchString));
             }
             if (!users.Any())
             {
-                ViewBag.NoResults = "該当のデータがありません";
+                ViewBag.NoResults = "該当のデータがありません";  
             }
-            users = users.OrderByDescending(u => u.UserID);
-            ViewBag.CurrentFilter = searchString;
-            return View(users.ToPagedList(page, pageSize));
+
+            ViewBag.CountUser = users.Count(); 
+            var pagedUsers = users.OrderByDescending(u => u.UserID).ToPagedList(page, pageSize);
+
+            ViewBag.CurrentFilter = searchString; 
+            return View("Index", pagedUsers);    
         }
         public ActionResult Create_Profile()
         {
@@ -78,11 +105,10 @@ namespace Profile_Management.Controllers
 
             if (ModelState.IsValid)
             {
-
                 db.user_TBLs.Add(user);
                 ActionLogMM.ActionLogSV("Create", user.FullName, user.UserID);
                 db.SaveChanges();
-                return RedirectToAction("Index", "ManagementUser");
+                return RedirectToAction("Edit",  new { id = user.UserID});
             }
             return RedirectToAction("Create_Profile", user);
         }
@@ -264,9 +290,11 @@ namespace Profile_Management.Controllers
                 return RedirectToAction("Login", "Account");
             }
             const int pageSize = 10;
-            var users = db.user_TBLs.OrderByDescending(p => p.UserID).ToList();
+            var users = db.user_TBLs.OrderByDescending(p => p.UserID);
+            ViewBag.CountUser = users.Count();
             var pageUsers = users.ToPagedList(page, pageSize);
             return View("Index", pageUsers);
         }
+
     }
 }
