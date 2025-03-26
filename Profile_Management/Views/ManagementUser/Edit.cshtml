@@ -65,16 +65,12 @@
                     <div class="form-group mb-3">
                         @Html.LabelFor(model => model.Nation_ID, new { @class = "control-label col-md-5" })
                         <div class="col-md-10">
-                            @Html.DropDownListFor(
-                                                    model => model.Nation_ID,
-                                                    new SelectList(ViewBag.Nationalities, "Value", "Text"),
-                                                    "-- 国籍選択 --",
-                                                    new { @class = "form-control" }
-                                                )
-
-                            @Html.ValidationMessageFor(model => model.Nation_ID, "", new { @class = "text-danger" })
-                           
+                            @Html.HiddenFor(model => model.Nation_ID)
+                            @Html.DropDownListFor(model => model.Nation_ID, new SelectList(
+                           ViewBag.Nationalities, "Value", "Text"),
+                           "-- 国籍選択 --", new { @class = "form-control", @required = "required" })
                         </div>
+                        @Html.ValidationMessageFor(model => model.Nation_ID, "", new { @class = "text-danger" })
                     </div>
                     <div class="form-group mb-3">
                         @Html.LabelFor(model => model.MaritalStatus, new { @class = "control-label col-md-5" })

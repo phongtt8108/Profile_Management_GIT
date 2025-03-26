@@ -11,6 +11,7 @@ using PagedList;
 using Profile_Management.Common;
 using System.Text;
 using System.Data.Entity;
+using System.Data.Entity.Validation;
 
 namespace Profile_Management.Controllers
 {
@@ -19,7 +20,7 @@ namespace Profile_Management.Controllers
         private ApplicationDbContext db = new ApplicationDbContext();
 
         // GET: ManagementUser
-        public ActionResult Index(/*string dateOfBirth,*/string searchString, int page = 1)
+        public ActionResult Index(string searchString, int page = 1)
         {
             if (Session["UserID"] == null)
             {
@@ -29,11 +30,6 @@ namespace Profile_Management.Controllers
             int pageSize = 10;
 
             var users = db.user_TBLs.AsQueryable();
-
-            //if (!string.IsNullOrEmpty(dateOfBirth) && DateTime.TryParse(dateOfBirth, out DateTime dob))
-            //{
-            //    users = users.Where(u => u.DateOfBirth == dob);
-            //}
             if (!string.IsNullOrEmpty(searchString))
             {
                 users = users.Where(u =>
@@ -116,28 +112,22 @@ namespace Profile_Management.Controllers
             var user = db.user_TBLs
                  .Include(u => u.Nationality)
                  .FirstOrDefault(u => u.UserID == id);
-
-
             var imagePath = user.ProfilePicture;
-
             if (user == null)
             {
                 return RedirectToAction("Index", "ManagementUser");
             }
-            var nationalities = db.nationalities
-                     .Select(n => new SelectListItem
-                     {
-                         Value = n.Nation_ID.ToString(),
-                         Text = n.Nation_Name
-                     })
-                     .ToList();
-
+            var nationalities = db.nationalities.Select(n => new SelectListItem
+            {
+                Value = n.Nation_ID.ToString(),
+                Text = n.Nation_Name
+            }).ToList();
             ViewBag.Nationalities = new SelectList(nationalities, "Value", "Text", user.Nationality);
             ViewBag.FormattedDate = user.DateOfBirth?.ToString("yyyy-MM-dd");
             ViewBag.ImagePath = imagePath;
             return View(user);
-
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Edit(User_TBL user)
@@ -158,14 +148,21 @@ namespace Profile_Management.Controllers
                     user.ProfilePicture = "/UploadedFiles/" + Path.GetFileName(user.ProfilePicture);
                 }
             }
-
+            else
+            {
+                var existingUser1 = db.user_TBLs.Find(user.UserID);
+                if (existingUser1 != null)
+                {
+                    user.ProfilePicture = existingUser1.ProfilePicture;
+                }
+            }
+            //ModelState.Remove("Nation_ID");
             if (ModelState.IsValid)
             {
                 var existingUser = db.user_TBLs.Find(user.UserID);
                 var oldData = ActionLogMM.EditBeboreData(user.UserID);
                 if (existingUser != null)
                 {
-
                     bool isDataChanged = false;
                     var properties = typeof(User_TBL).GetProperties();
                     StringBuilder changesLog = new StringBuilder();
@@ -174,8 +171,15 @@ namespace Profile_Management.Controllers
                     {
                         var oldValue = property.GetValue(existingUser);
                         var newValue = property.GetValue(user);
-
-                        if (oldValue != newValue)
+                        if (property.Name == "Nationality")
+                        {
+                            if (existingUser.Nationality?.Nation_ID == user.Nation_ID)
+                            {
+                                continue; 
+                            }
+                        }
+                        //System.Diagnostics.Debug.WriteLine($"Property: {property.Name} | Old: {oldValue} | New: {newValue}");
+                        if (!Equals(oldValue, newValue) && !(newValue == null && oldValue == null ))
                         {
                             isDataChanged = true;
                             if (oldValue == null)
@@ -196,22 +200,24 @@ namespace Profile_Management.Controllers
                     if (isDataChanged)
                     {
                         ActionLogMM.ActionLogSV("Edit", changesLog.ToString(), user.UserID);
-                        db.SaveChanges();
-                    }
-                    //existingUser.FullName = user.FullName;
-                    //existingUser.DateOfBirth = user.DateOfBirth;
-                    //existingUser.Gender = user.Gender;
-                    //existingUser.NationalID = user.NationalID;
-                    //existingUser.Nation_ID = user.Nation_ID;
-                    //existingUser.MaritalStatus = user.MaritalStatus;
-                    //existingUser.PhoneNumber = user.PhoneNumber;
-                    //existingUser.Address = user.Address;
-                    //existingUser.Job = user.Job;
-                    //existingUser.Company = user.Company;
-                    //existingUser.Position = user.Position;
-                    //existingUser.ProfilePicture = user.ProfilePicture;
-                }
+                        //try
+                        //{
+                            db.SaveChanges();
+                        //}
+                        //catch (DbEntityValidationException ex)
+                        //{
+                        //    foreach (var validationErrors in ex.EntityValidationErrors)
+                        //    {
+                        //        foreach (var validationError in validationErrors.ValidationErrors)
+                        //        {
+                        //            System.Diagnostics.Debug.WriteLine($"Property: {validationError.PropertyName} Error: {validationError.ErrorMessage}");
+                        //        }
+                        //    }
+                        //    throw;
+                        //}
 
+                    }
+                }
             }
             return RedirectToAction("Edit", new { id = user.UserID });
         }
@@ -224,11 +230,9 @@ namespace Profile_Management.Controllers
             if (user != null)
             {
                 ActionLogMM.ActionLogSV("Delete", user.FullName, user.UserID);
-
                 db.user_TBLs.Remove(user);
                 db.SaveChanges();
             }
-
             return RedirectToAction("Index");
         }
 
@@ -242,13 +246,11 @@ namespace Profile_Management.Controllers
                 {
                     Directory.CreateDirectory(uploadPath);
                 }
-
                 string fileExt = Path.GetExtension(file.FileName);
                 string fileName = Guid.NewGuid().ToString() + fileExt;
                 string filePath = Path.Combine(uploadPath, fileName);
 
                 file.SaveAs(filePath);
-
                 // 暫定保存のURLを返す
                 return Json(new { success = true, filePath = "/UploadedFiles/Temp/" + fileName });
             }

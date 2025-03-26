@@ -7,13 +7,13 @@ namespace Profile_Management.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.5.1")]
-    public sealed partial class g : IMigrationMetadata
+    public sealed partial class Required : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(g));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(Required));
         
         string IMigrationMetadata.Id
         {
-            get { return "202503110836224_g"; }
+            get { return "202503260403124_Required"; }
         }
         
         string IMigrationMetadata.Source

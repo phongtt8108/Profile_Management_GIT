@@ -7,13 +7,13 @@ namespace Profile_Management.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.5.1")]
-    public sealed partial class fa : IMigrationMetadata
+    public sealed partial class intchange_1 : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(fa));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(intchange_1));
         
         string IMigrationMetadata.Id
         {
-            get { return "202503110751231_fa"; }
+            get { return "202503251504448_intchange_1"; }
         }
         
         string IMigrationMetadata.Source
