@@ -78,7 +78,7 @@
                 //index++;
                 <tr>
                     <td>
-                        @Html.DisplayFor(modelItem => item.UserID)
+                        @Html.Highlight(item.UserID, ViewBag.CurrentFilter as string))
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.FullName)
