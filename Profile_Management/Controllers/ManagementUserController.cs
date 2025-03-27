@@ -298,7 +298,7 @@ namespace Profile_Management.Controllers
             return Json(new { success = false });
         }
 
-        public ActionResult Deatail_PageFunc(int page = 1)
+        public ActionResult Detail_PageFunc(int page = 1)
         {
             if (Session["UserID"] == null)
             {

@@ -7,9 +7,7 @@
 @{
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
-
 }
-
 <h2>個人管理</h2>
 
 <div style="float: right" class="mb-3">
@@ -88,7 +86,7 @@
                         @Html.DisplayFor(modelItem => item.DateOfBirth)
                     </td>
                     <td>
-                        @Html.Highlightitem(item.Gender,ViewBag.CurrentFilter as string )
+                        @Html.Highlight(item.Gender,ViewBag.CurrentFilter as string )
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.NationalID)
