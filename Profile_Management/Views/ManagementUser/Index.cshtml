@@ -1,4 +1,5 @@
 ﻿@*@model IEnumerable<Profile_Management.Controllers.User_TBL>*@
+@using Profile_Management.Common
 @using PagedList.Mvc;
 @using PagedList;
 @model PagedList.IPagedList<Profile_Management.Controllers.User_TBL>
@@ -20,7 +21,7 @@
 @using (Html.BeginForm("SearchFunction", "ManagementUser", FormMethod.Get))
 {
     <div class="input-group mb-3">
-        @Html.TextBox("searchString", ViewBag.CurrentFilter as string, new { @class = "form-control", placeholder = "検索入力" })
+        @Html.TextBox("searchString", ViewBag.CurrentFilter as string, new { @class = "form-control", placeholder = "ユーザーコード・氏名・別性・国籍・婚姻・職業までを入力" })
         <button type="submit" class="btn btn-primary">🔍 検索</button>
     </div>
 }
@@ -78,25 +79,25 @@
                 //index++;
                 <tr>
                     <td>
-                        @Html.Highlight(item.UserID, ViewBag.CurrentFilter as string))
+                        @Html.Highlight(item.UserID.ToString(), ViewBag.CurrentFilter as string)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.FullName)
+                        @Html.Highlight(item.FullName, ViewBag.CurrentFilter as string)
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.DateOfBirth)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.Gender)
+                        @Html.Highlightitem(item.Gender,ViewBag.CurrentFilter as string )
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.NationalID)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.Nationality.Nation_Name)
+                        @Html.Highlight(item.Nationality.Nation_Name, ViewBag.CurrentFilter as string)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.MaritalStatus)
+                        @Html.Highlight(item.MaritalStatus, ViewBag.CurrentFilter as string)
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.PhoneNumber)
@@ -105,13 +106,13 @@
                         @Html.DisplayFor(modelItem => item.Address)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.Job)
+                        @Html.Highlight(item.Job, ViewBag.CurrentFilter as string)
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.Company)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.Position)
+                        @Html.Highlight(item.Position, ViewBag.CurrentFilter as string)
                     </td>
                     <td>
                         @if (!string.IsNullOrEmpty(item.ProfilePicture))
@@ -160,13 +161,13 @@
     </table>
 </div>
 
-    
+
 
 <div class="pagination">
 
     @if (Model.HasPreviousPage)
     {
-        <a href="@Url.Action("Deatail_PageFunc","ManagementUser", new { page = 1 })" class="first">最初</a>
+        <a href="@Url.Action("Detail_PageFunc","ManagementUser", new { page = 1 })" class="first">最初</a>
     }
     else
     {
@@ -175,7 +176,7 @@
 
     @if (Model.HasPreviousPage)
     {
-        <a href="@Url.Action("Deatail_PageFunc","ManagementUser", new { page = Model.PageNumber - 1 })" class="previous">戻す</a>
+        <a href="@Url.Action("Detail_PageFunc","ManagementUser", new { page = Model.PageNumber - 1 })" class="previous">戻す</a>
     }
     else
     {
@@ -184,7 +185,7 @@
 
     @for (var i = Math.Max(1, Model.PageNumber - 5); i <= Math.Min(Model.PageCount, Model.PageNumber + 5); i++)
     {
-        <a href="@Url.Action("Deatail_PageFunc", "ManagementUser", new { page = i })" class="page-number @(i == Model.PageNumber ? "active" : "")">
+        <a href="@Url.Action("Detail_PageFunc", "ManagementUser", new { page = i })" class="page-number @(i == Model.PageNumber ? "active" : "")">
             @i
         </a>
     }
@@ -192,7 +193,7 @@
 
     @if (Model.HasNextPage)
     {
-        <a href="@Url.Action("Deatail_PageFunc","ManagementUser", new { page = Model.PageNumber + 1 })" class="next">次</a>
+        <a href="@Url.Action("Detail_PageFunc","ManagementUser", new { page = Model.PageNumber + 1 })" class="next">次</a>
     }
     else
     {
@@ -202,7 +203,7 @@
 
     @if (Model.HasNextPage)
     {
-        <a href="@Url.Action("Deatail_PageFunc","ManagementUser", new { page = Model.PageCount })" class="last">最後</a>
+        <a href="@Url.Action("Detail_PageFunc","ManagementUser", new { page = Model.PageCount })" class="last">最後</a>
     }
     else
     {

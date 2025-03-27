@@ -32,22 +32,30 @@ namespace Profile_Management.Controllers
             var users = db.user_TBLs.AsQueryable();
             if (!string.IsNullOrEmpty(searchString))
             {
-                users = users.Where(u =>
-                    u.FullName.Contains(searchString) ||
-                    u.Gender.Contains(searchString) ||
-                    u.Job.Contains(searchString) ||
-                    u.MaritalStatus.Contains(searchString));
+                if (int.TryParse(searchString, out int userID))
+                {
+                    users = db.user_TBLs.Where(u => u.UserID == userID);
+                }
+                else
+                {
+                    users = users.Where(u =>
+                        u.UserID.ToString().Contains(searchString) ||
+                        u.FullName.Contains(searchString) ||
+                        u.Gender.Contains(searchString) ||
+                        u.Job.Contains(searchString) ||
+                        u.MaritalStatus.Contains(searchString) ||
+                        u.Position.Contains(searchString));
+                }
             }
             ViewBag.CountUser = users.Count();
             var pagedUsers = users
                 .OrderByDescending(u => u.UserID)
                 .ToPagedList(page, pageSize);
             ViewBag.CurrentFilter = searchString;
-
             return View(pagedUsers);
         }
 
-        public ActionResult SearchFunction(string searchString, int page = 1)
+        public ActionResult SearchFunction(string searchString = "", int page = 1)
         {
             if (Session["UserID"] == null)
             {
@@ -57,22 +65,29 @@ namespace Profile_Management.Controllers
             var users = db.user_TBLs.AsQueryable();
             if (!string.IsNullOrEmpty(searchString))
             {
-                users = users.Where(u =>
-                    u.FullName.Contains(searchString) ||
-                    u.Gender.Contains(searchString) ||
-                    u.Job.Contains(searchString) ||
-                    u.MaritalStatus.Contains(searchString));
+                if (int.TryParse(searchString, out int userID))
+                {
+                    users = db.user_TBLs.Where(u => u.UserID == userID);
+                }
+                else
+                {
+                    users = users.Where(u =>
+                        u.UserID.ToString().Contains(searchString) ||
+                        u.FullName.Contains(searchString) ||
+                        u.Gender.Contains(searchString) ||
+                        u.Job.Contains(searchString) ||
+                          u.MaritalStatus.Contains(searchString) ||
+                        u.Position.Contains(searchString));
+                }
             }
+            ViewBag.CountUser = users.Count();
+            var pagedUsers = users.OrderByDescending(u => u.UserID).ToPagedList(page, pageSize);
             if (!users.Any())
             {
-                ViewBag.NoResults = "該当のデータがありません";  
+                ViewBag.NoResults = "該当のデータがありません";
             }
-
-            ViewBag.CountUser = users.Count(); 
-            var pagedUsers = users.OrderByDescending(u => u.UserID).ToPagedList(page, pageSize);
-
-            ViewBag.CurrentFilter = searchString; 
-            return View("Index", pagedUsers);    
+            ViewBag.CurrentFilter = searchString;
+            return View("Index", pagedUsers);
         }
         public ActionResult Create_Profile()
         {
@@ -108,7 +123,7 @@ namespace Profile_Management.Controllers
                 db.user_TBLs.Add(user);
                 ActionLogMM.ActionLogSV("Create", user.FullName, user.UserID);
                 db.SaveChanges();
-                return RedirectToAction("Edit",  new { id = user.UserID});
+                return RedirectToAction("Edit", new { id = user.UserID });
             }
             return RedirectToAction("Create_Profile", user);
         }
@@ -201,11 +216,11 @@ namespace Profile_Management.Controllers
                         {
                             if (existingUser.Nationality?.Nation_ID == user.Nation_ID)
                             {
-                                continue; 
+                                continue;
                             }
                         }
-                        //System.Diagnostics.Debug.WriteLine($"Property: {property.Name} | Old: {oldValue} | New: {newValue}");
-                        if (!Equals(oldValue, newValue) && !(newValue == null && oldValue == null ))
+                        System.Diagnostics.Debug.WriteLine($"Property: {property.Name} | Old: {oldValue} | New: {newValue}");
+                        if (!Equals(oldValue, newValue) && !(newValue == null && oldValue == null))
                         {
                             isDataChanged = true;
                             if (oldValue == null)
@@ -228,7 +243,7 @@ namespace Profile_Management.Controllers
                         ActionLogMM.ActionLogSV("Edit", changesLog.ToString(), user.UserID);
                         //try
                         //{
-                            db.SaveChanges();
+                        db.SaveChanges();
                         //}
                         //catch (DbEntityValidationException ex)
                         //{

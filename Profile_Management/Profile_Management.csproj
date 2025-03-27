@@ -318,12 +318,16 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Common\ActionLogMM.cs" />
+    <Compile Include="Common\HighlightHelper.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\ActionLogController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\ManagementUserController.cs" />
     <Compile Include="Controllers\MM_NationalityController.cs" />
+    <Compile Include="D:/Rikkei/Profile_Management_5/Profile_Management/Profile_Management/Controllers/\User_TBL.cs">
+      <Link>User_TBL.cs</Link>
+    </Compile>
     <Compile Include="Migrations\202503251504448_intchange_1.cs" />
     <Compile Include="Migrations\202503251504448_intchange_1.Designer.cs">
       <DependentUpon>202503251504448_intchange_1.cs</DependentUpon>
@@ -4150,6 +4154,7 @@
     <Content Include="Assets\plugins\uplot\uPlot.iife.min.js" />
     <Content Include="Assets\plugins\uplot\uPlot.min.css" />
     <Content Include="Assets_Trial\css\bootstrap.min.css" />
+    <Content Include="Assets_Trial\css\Highlight.css" />
     <Content Include="Assets_Trial\css\pagination.css" />
     <Content Include="Assets_Trial\css\style.css" />
     <Content Include="Assets_Trial\img\avatar.jpg" />
